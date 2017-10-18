@@ -23,7 +23,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelection;
 import java.util.Arrays;
 
 final class TrackSelectionHelper implements View.OnClickListener,
-    DialogInterface.OnClickListener {
+        DialogInterface.OnClickListener {
 
   private static final TrackSelection.Factory FIXED_FACTORY = new FixedTrackSelection.Factory();
   private static final TrackSelection.Factory RANDOM_FACTORY = new RandomTrackSelection.Factory();
@@ -49,7 +49,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
    *     if the selection helper should not support adaptive tracks.
    */
   public TrackSelectionHelper(MappingTrackSelector selector,
-      TrackSelection.Factory adaptiveTrackSelectionFactory) {
+                              TrackSelection.Factory adaptiveTrackSelectionFactory) {
     this.selector = selector;
     this.adaptiveTrackSelectionFactory = adaptiveTrackSelectionFactory;
   }
@@ -71,20 +71,20 @@ final class TrackSelectionHelper implements View.OnClickListener,
     trackGroupsAdaptive = new boolean[trackGroups.length];
     for (int i = 0; i < trackGroups.length; i++) {
       trackGroupsAdaptive[i] = adaptiveTrackSelectionFactory != null
-          && trackInfo.getAdaptiveSupport(rendererIndex, i, false)
+              && trackInfo.getAdaptiveSupport(rendererIndex, i, false)
               != RendererCapabilities.ADAPTIVE_NOT_SUPPORTED
-          && trackGroups.get(i).length > 1;
+              && trackGroups.get(i).length > 1;
     }
     isDisabled = selector.getRendererDisabled(rendererIndex);
     override = selector.getSelectionOverride(rendererIndex, trackGroups);
 
     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     builder.setTitle(title)
-        .setView(buildView(builder.getContext()))
-        .setPositiveButton(android.R.string.ok, this)
-        .setNegativeButton(android.R.string.cancel, null)
-        .create()
-        .show();
+            .setView(buildView(builder.getContext()))
+            .setPositiveButton(android.R.string.ok, this)
+            .setNegativeButton(android.R.string.cancel, null)
+            .create()
+            .show();
   }
 
   @SuppressLint("InflateParams")
@@ -94,13 +94,13 @@ final class TrackSelectionHelper implements View.OnClickListener,
     ViewGroup root = (ViewGroup) view.findViewById(R.id.root);
 
     TypedArray attributeArray = context.getTheme().obtainStyledAttributes(
-        new int[] {android.R.attr.selectableItemBackground});
+            new int[] {android.R.attr.selectableItemBackground});
     int selectableItemBackgroundResourceId = attributeArray.getResourceId(0, 0);
     attributeArray.recycle();
 
     // View for disabling the renderer.
     disableView = (CheckedTextView) inflater.inflate(
-        android.R.layout.simple_list_item_single_choice, root, false);
+            android.R.layout.simple_list_item_single_choice, root, false);
     disableView.setBackgroundResource(selectableItemBackgroundResourceId);
     disableView.setText(R.string.selection_disabled);
     disableView.setFocusable(true);
@@ -109,7 +109,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
 
     // View for clearing the override to allow the selector to use its default selection logic.
     defaultView = (CheckedTextView) inflater.inflate(
-        android.R.layout.simple_list_item_single_choice, root, false);
+            android.R.layout.simple_list_item_single_choice, root, false);
     defaultView.setBackgroundResource(selectableItemBackgroundResourceId);
     defaultView.setText(R.string.selection_default);
     defaultView.setFocusable(true);
@@ -118,7 +118,6 @@ final class TrackSelectionHelper implements View.OnClickListener,
     root.addView(defaultView);
 
     // Per-track views.
-    boolean haveSupportedTracks = false;
     boolean haveAdaptiveTracks = false;
     trackViews = new CheckedTextView[trackGroups.length][];
     for (int groupIndex = 0; groupIndex < trackGroups.length; groupIndex++) {
@@ -131,17 +130,16 @@ final class TrackSelectionHelper implements View.OnClickListener,
           root.addView(inflater.inflate(R.layout.list_divider, root, false));
         }
         int trackViewLayoutId = groupIsAdaptive ? android.R.layout.simple_list_item_multiple_choice
-            : android.R.layout.simple_list_item_single_choice;
+                : android.R.layout.simple_list_item_single_choice;
         CheckedTextView trackView = (CheckedTextView) inflater.inflate(
-            trackViewLayoutId, root, false);
+                trackViewLayoutId, root, false);
         trackView.setBackgroundResource(selectableItemBackgroundResourceId);
         trackView.setText(Utils.buildTrackName(group.getFormat(trackIndex)));
         if (trackInfo.getTrackFormatSupport(rendererIndex, groupIndex, trackIndex)
-            == RendererCapabilities.FORMAT_HANDLED) {
+                == RendererCapabilities.FORMAT_HANDLED) {
           trackView.setFocusable(true);
           trackView.setTag(Pair.create(groupIndex, trackIndex));
           trackView.setOnClickListener(this);
-          haveSupportedTracks = true;
         } else {
           trackView.setFocusable(false);
           trackView.setEnabled(false);
@@ -151,13 +149,10 @@ final class TrackSelectionHelper implements View.OnClickListener,
       }
     }
 
-    if (!haveSupportedTracks) {
-      // Indicate that the default selection will be nothing.
-      defaultView.setText(R.string.selection_default_none);
-    } else if (haveAdaptiveTracks) {
+    if (haveAdaptiveTracks) {
       // View for using random adaptation.
       enableRandomAdaptationView = (CheckedTextView) inflater.inflate(
-          android.R.layout.simple_list_item_multiple_choice, root, false);
+              android.R.layout.simple_list_item_multiple_choice, root, false);
       enableRandomAdaptationView.setBackgroundResource(selectableItemBackgroundResourceId);
       enableRandomAdaptationView.setText(R.string.enable_random_adaptation);
       enableRandomAdaptationView.setOnClickListener(this);
@@ -175,7 +170,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
     for (int i = 0; i < trackViews.length; i++) {
       for (int j = 0; j < trackViews[i].length; j++) {
         trackViews[i][j].setChecked(override != null && override.groupIndex == i
-            && override.containsTrack(j));
+                && override.containsTrack(j));
       }
     }
     if (enableRandomAdaptationView != null) {
@@ -184,7 +179,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
       enableRandomAdaptationView.setFocusable(enableView);
       if (enableView) {
         enableRandomAdaptationView.setChecked(!isDisabled
-            && override.factory instanceof RandomTrackSelection.Factory);
+                && override.factory instanceof RandomTrackSelection.Factory);
       }
     }
   }
@@ -220,7 +215,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
       int groupIndex = tag.first;
       int trackIndex = tag.second;
       if (!trackGroupsAdaptive[groupIndex] || override == null
-          || override.groupIndex != groupIndex) {
+              || override.groupIndex != groupIndex) {
         override = new MappingTrackSelector.SelectionOverride(FIXED_FACTORY, groupIndex, trackIndex);
       } else {
         // The group being modified is adaptive and we already have a non-null override.
@@ -234,12 +229,12 @@ final class TrackSelectionHelper implements View.OnClickListener,
             isDisabled = true;
           } else {
             setOverride(groupIndex, getTracksRemoving(override, trackIndex),
-                enableRandomAdaptationView.isChecked());
+                    enableRandomAdaptationView.isChecked());
           }
         } else {
           // Add the track to the override.
           setOverride(groupIndex, getTracksAdding(override, trackIndex),
-              enableRandomAdaptationView.isChecked());
+                  enableRandomAdaptationView.isChecked());
         }
       }
     }
@@ -249,7 +244,7 @@ final class TrackSelectionHelper implements View.OnClickListener,
 
   private void setOverride(int group, int[] tracks, boolean enableRandomAdaptation) {
     TrackSelection.Factory factory = tracks.length == 1 ? FIXED_FACTORY
-        : (enableRandomAdaptation ? RANDOM_FACTORY : adaptiveTrackSelectionFactory);
+            : (enableRandomAdaptation ? RANDOM_FACTORY : adaptiveTrackSelectionFactory);
     override = new MappingTrackSelector.SelectionOverride(factory, group, tracks);
   }
 

@@ -19,39 +19,39 @@ final class Utils {
     String trackName;
     if (MimeTypes.isVideo(format.sampleMimeType)) {
       trackName = joinWithSeparator(joinWithSeparator(joinWithSeparator(
-          buildResolutionString(format), buildBitrateString(format)), buildTrackIdString(format)),
-          buildSampleMimeTypeString(format));
+              buildResolutionString(format), buildBitrateString(format)), buildTrackIdString(format)),
+              buildSampleMimeTypeString(format));
     } else if (MimeTypes.isAudio(format.sampleMimeType)) {
       trackName = joinWithSeparator(joinWithSeparator(joinWithSeparator(joinWithSeparator(
-          buildLanguageString(format), buildAudioPropertyString(format)),
-          buildBitrateString(format)), buildTrackIdString(format)),
-          buildSampleMimeTypeString(format));
+              buildLanguageString(format), buildAudioPropertyString(format)),
+              buildBitrateString(format)), buildTrackIdString(format)),
+              buildSampleMimeTypeString(format));
     } else {
       trackName = joinWithSeparator(joinWithSeparator(joinWithSeparator(buildLanguageString(format),
-          buildBitrateString(format)), buildTrackIdString(format)),
-          buildSampleMimeTypeString(format));
+              buildBitrateString(format)), buildTrackIdString(format)),
+              buildSampleMimeTypeString(format));
     }
     return trackName.length() == 0 ? "unknown" : trackName;
   }
 
   private static String buildResolutionString(Format format) {
     return format.width == Format.NO_VALUE || format.height == Format.NO_VALUE
-        ? "" : format.width + "x" + format.height;
+            ? "" : format.width + "x" + format.height;
   }
 
   private static String buildAudioPropertyString(Format format) {
     return format.channelCount == Format.NO_VALUE || format.sampleRate == Format.NO_VALUE
-        ? "" : format.channelCount + "ch, " + format.sampleRate + "Hz";
+            ? "" : format.channelCount + "ch, " + format.sampleRate + "Hz";
   }
 
   private static String buildLanguageString(Format format) {
     return TextUtils.isEmpty(format.language) || "und".equals(format.language) ? ""
-        : format.language;
+            : format.language;
   }
 
   private static String buildBitrateString(Format format) {
     return format.bitrate == Format.NO_VALUE ? ""
-        : String.format(Locale.US, "%.2fMbit", format.bitrate / 1000000f);
+            : String.format(Locale.US, "%.2fMbit", format.bitrate / 1000000f);
   }
 
   private static String joinWithSeparator(String first, String second) {
